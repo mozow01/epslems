@@ -22,7 +22,7 @@ Definition epsinv_type {U:Type} (A B : U -> Prop) := forall u v : { x : U | {y |
 B (proj1_sig u) <-> B (proj1_sig v).
 ````
 
-Spec. case: U = nat. (Used in Lemma 3, 4.)
+Spec. case: U = nat. (Used in Lemma 4.)
 
 ````coq
 Definition epsinv (A B : nat -> Prop) := forall u v : { x : nat | (exists x, A x) -> A x }, 
