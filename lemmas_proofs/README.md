@@ -50,7 +50,7 @@ Qed.
 ## Lemma 3
 
 ````coq
-Lemma subst_1 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+Lemma lemma_subst_1 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
 (((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x )->
 B (proj1_sig u)).
 Proof.
@@ -69,7 +69,7 @@ Qed.
 ## Lemma 4
 
 ````coq
-Lemma subst_2 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+Lemma lemma_subst_2 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
 (exists x, A x ) \/ (~ exists x, A x) -> 
 (epsinv A B) -> 
 B (proj1_sig u)->((((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x ))).
