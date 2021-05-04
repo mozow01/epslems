@@ -18,9 +18,17 @@ Qed.
 ## Definition 1
 
 ````coq
+Definition epsinv_type {U:Type} (A B : U -> Prop) := forall u v : { x : U | {y | A y} -> A x }, 
+B (proj1_sig u) <-> B (proj1_sig v).
+````
+
+Spec. case: U = nat. (Used in Lemma 3, 4.)
+
+````coq
 Definition epsinv (A B : nat -> Prop) := forall u v : { x : nat | (exists x, A x) -> A x }, 
 B (proj1_sig u) <-> B (proj1_sig v).
 ````
+
 
 ## Lemma 2
 
