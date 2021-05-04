@@ -22,13 +22,6 @@ Definition epsinv_type {U:Type} (A B : U -> Prop) := forall u v : { x : U | {y |
 B (proj1_sig u) <-> B (proj1_sig v).
 ````
 
-Spec. case: U = nat. (Used in Lemma 4.)
-
-````coq
-Definition epsinv (A B : nat -> Prop) := forall u v : { x : nat | (exists x, A x) -> A x }, 
-B (proj1_sig u) <-> B (proj1_sig v).
-````
-
 
 ## Lemma 2
 
@@ -58,7 +51,7 @@ Qed.
 ## Lemma 3
 
 ````coq
-Theorem subst_1 : forall U : Type, forall A B : U -> Prop, 
+Lemma lemma_subst_1 : forall U : Type, forall A B : U -> Prop, 
 forall u : { x : U | (exists x, A x) -> A x },
 (((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x )->
 B (proj1_sig u)).
@@ -78,9 +71,10 @@ Qed.
 ## Lemma 4
 
 ````coq
-Lemma lemma_subst_2 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+Lemma lemma_subst_2 : forall U : Type, forall A B : U -> Prop, 
+forall u : { x : U | {x | A x} -> A x },
 (exists x, A x ) \/ (~ exists x, A x) -> 
-(epsinv A B) -> 
+(epsinv_type A B) -> 
 B (proj1_sig u)->((((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x ))).
 Proof.
   intros.
@@ -89,30 +83,31 @@ Proof.
   split.
   + auto.
   + intros.
-  assert (M:(exists x0 : nat, A x0) -> A x).
-  ++ auto.
-  ++ assert (L : x = proj1_sig (exist (fun x0:nat => (exists x1 : nat, A x1) -> A x0) x M)). 
-  * compute.
-  reflexivity.
-  * assert (L1 : B (proj1_sig (exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x M))).
-  ** apply H0 with (u:=u) (v:=exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x M).
-  auto.
-  ** rewrite L.
-  exact L1.
+  * assert (M: { x0 | A x0} -> A x). 
+    { auto. }
+  ** assert (L : x = proj1_sig (exist (fun x0 : U => { x1 | A x1} -> A x0) x M)). 
+    { compute. reflexivity. }
+  *** assert (L1 : B (proj1_sig (exist (fun x0 : U => { x1 | A x1 } -> A x0) x M))).
+    { apply H0 with (u:=u) (v:=exist (fun x0 : U => { x1 | A x1 } -> A x0) x M).
+  auto. }
+  **** rewrite L.
+       exact L1.
   - right.
   split.
   + exact L.
   + intros.
-  assert (W:(exists x0 : nat, A x0) -> A x).
-  * intros.
-  contradiction.
-  * assert (N : x = proj1_sig (exist (fun x0:nat => (exists x1 : nat, A x1) -> A x0) x W)). 
-  compute.
-  ** reflexivity.
-  ** assert (L2 : B (proj1_sig (exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x W))).
-  apply H0 with (u:=u) (v:=exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x W).
-  *** auto.
-  *** rewrite N.
-  exact L2.
+  * assert (W: {x0 | A x0 } -> A x).
+    { intros.
+      assert (K : (exists x : U, A x) ). 
+      { apply ex_intro with (x:=proj1_sig X). exact (proj2_sig X). }
+      contradiction. }
+  ** assert (N : x = proj1_sig (exist (fun x0 : U  => { x1 | A x1 } -> A x0) x W)). 
+    { compute. reflexivity. }
+  *** assert (L2 : B (proj1_sig (exist (fun x0 : U => { x1 | A x1 } -> A x0) x W))).
+      { apply H0 with (u:=u) (v:=exist (fun x0 : U => { x1 | A x1 } -> A x0 ) x W).
+        auto. }
+  **** rewrite N.
+       exact L2.
 Qed.
+
 ````
