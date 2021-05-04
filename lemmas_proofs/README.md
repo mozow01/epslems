@@ -69,7 +69,7 @@ Qed.
 ## Lemma 4
 
 ````coq
-Theorem subst_2 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+Lemma subst_2 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
 (exists x, A x ) \/ (~ exists x, A x) -> 
 (epsinv A B) -> 
 B (proj1_sig u)->((((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x ))).
