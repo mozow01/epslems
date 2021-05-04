@@ -58,19 +58,20 @@ Qed.
 ## Lemma 3
 
 ````coq
-Lemma lemma_subst_1 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+Theorem subst_1 : forall U : Type, forall A B : U -> Prop, 
+forall u : { x : U | (exists x, A x) -> A x },
 (((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x )->
 B (proj1_sig u)).
 Proof.
   intros.
   destruct H as [K|L].
-  destruct K as [K1 K2].
-  assert (M0 :(exists x, A x) -> A (proj1_sig u)).
-  exact (proj2_sig u). 
-  assert (M1 :  A (proj1_sig u)).
+  - destruct K as [K1 K2].
+  assert (M0 :(exists x, A x) -> A (proj1_sig u)). 
+  { exact (proj2_sig u). } 
+  assert (M1 :  A (proj1_sig u)). 
+  { auto. }
   auto.
-  auto.
-  destruct L as [L1 L2].
+  - destruct L as [L1 L2].
   auto.
 Qed.
 ````
