@@ -46,3 +46,64 @@ Proof.
   compute. auto.
 Qed. 
 ```` 
+
+## Lemma 3
+
+````coq
+Lemma subst_1 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+(((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x )->
+B (proj1_sig u)).
+Proof.
+  intros.
+  destruct H as [K|L].
+  destruct K as [K1 K2].
+  assert (M0 :(exists x, A x) -> A (proj1_sig u)).
+  exact (proj2_sig u). 
+  assert (M1 :  A (proj1_sig u)).
+  auto.
+  auto.
+  destruct L as [L1 L2].
+  auto.
+Qed.
+````
+## Lemma 4
+
+````coq
+Theorem subst_2 : forall A B : nat -> Prop, forall u : { x : nat | (exists x, A x) -> A x },
+(exists x, A x ) \/ (~ exists x, A x) -> 
+(epsinv A B) -> 
+B (proj1_sig u)->((((exists x, A x )/\(forall x, A x -> B x))\/((~ exists x, A x)/\ forall x, B x ))).
+Proof.
+  intros.
+  destruct H as [K|L].
+  - left.
+  split.
+  + auto.
+  + intros.
+  assert (M:(exists x0 : nat, A x0) -> A x).
+  ++ auto.
+  ++ assert (L : x = proj1_sig (exist (fun x0:nat => (exists x1 : nat, A x1) -> A x0) x M)). 
+  * compute.
+  reflexivity.
+  * assert (L1 : B (proj1_sig (exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x M))).
+  ** apply H0 with (u:=u) (v:=exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x M).
+  auto.
+  ** rewrite L.
+  exact L1.
+  - right.
+  split.
+  + exact L.
+  + intros.
+  assert (W:(exists x0 : nat, A x0) -> A x).
+  * intros.
+  contradiction.
+  * assert (N : x = proj1_sig (exist (fun x0:nat => (exists x1 : nat, A x1) -> A x0) x W)). 
+  compute.
+  ** reflexivity.
+  ** assert (L2 : B (proj1_sig (exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x W))).
+  apply H0 with (u:=u) (v:=exist (fun x0 : nat => (exists x1 : nat, A x1) -> A x0) x W).
+  *** auto.
+  *** rewrite N.
+  exact L2.
+Qed.
+````
